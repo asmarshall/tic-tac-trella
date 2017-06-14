@@ -5,6 +5,8 @@ class Board {
       [null,null,null],
       [null,null,null]
     ];
+    this.cellMapping = this.cellMapping();
+    this.tttMapping = this.tttMapping();
   }
 
   // place mark
@@ -91,6 +93,15 @@ class Board {
       3: [1, 0], 4: [1, 1], 5: [1, 2],
       6: [2, 0], 7: [2, 1], 8: [2, 2]
     };
+  }
+
+  tttMapping() {
+    const cells = document.querySelectorAll(".cell");
+    const tttMap = {}
+    cells.forEach((el, idx) => {
+      tttMap[idx] = cells[idx]
+    })
+    return tttMap;
   }
 }
 

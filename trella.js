@@ -3,24 +3,26 @@ class Trella {
     this.board = board;
     this.name = 'Trella';
     this.mark = 'x';
-    this.cellMapping = board.cellMapping();
   }
 
   makeStartMark() {
-    const cells = document.querySelectorAll('.cell');
     let randPos = Math.floor(Math.random() * 9);
-    this.board.placeMark(this.cellMapping[randPos], this.mark, cells[randPos]);
+    this.board.placeMark(this.board.cellMapping[randPos], this.mark, this.board.tttMapping[randPos]);
   }
 
   makeMark() {
-    // line 16-18 FIX rand number 
-    const cells = document.querySelectorAll('.cell');
     const randNum = Math.floor(Math.random() * this.winningMoves().length);
-    debugger
-    const possiblePos = this.cellMapping[randNum];
-    this.board.placeMark(possiblePos, this.mark, cells[randNum])
+    const possiblePos = this.winningMoves()[randNum];
+
+    for (var key in this.board.tttMapping) {
+      if (this.board.cellMapping[key][0] === possiblePos[0] && this.board.cellMapping[key][1] === possiblePos[1]) {
+        this.board.placeMark(possiblePos, this.mark, this.board.tttMapping[key])
+      }
+    }
   }
 
+
+//what to do incase there are no more winning moves left!!!!!!!!!!!!!
   winningMoves() {
     const winningCom = this.board.winningComb();
     let possibleCom = [];

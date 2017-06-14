@@ -63,45 +63,15 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Game = __webpack_require__(2);
-
-document.addEventListener('DOMContentLoaded', () => {
-  new Game().setup();
-
-    var popup = document.getElementById('popup');
-    var span = document.getElementsByClassName("close")[0];
-    var button = document.getElementsByClassName("button");
-    span.onclick = function() {
-      popup.style.display = "none";
-    }
-
-    button.onclick = function() {
-      popup.style.display = "none";
-    }
-
-    // window.onclick = function(event) {
-    //   if (event.target == popup) {
-    //     popup.style.display = "none";
-    //   }
-    // }
-
-})
-
-
-/***/ }),
-/* 1 */,
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Board = __webpack_require__(3);
-const Trella = __webpack_require__(4)
+const Board = __webpack_require__(2);
+const Trella = __webpack_require__(3)
 
 class Game {
   constructor() {
@@ -118,11 +88,12 @@ class Game {
   setup() {
     this.listenForMarkPlacement();
     this.listenForPlayerStart();
+    this.start();
   }
 
   listenForMarkPlacement() {
     const cells = document.querySelectorAll('.cell');
-    const cellMapping = this.board.cellMapping()
+    const cellMapping = this.board.cellMapping
     cells.forEach((cell, idx) => {
       cell.addEventListener('click', (ev) => {
         this.board.placeMark(cellMapping[idx], "o", cell)
@@ -147,8 +118,37 @@ class Game {
   }
 
   start() {
+    var popup = document.getElementById('popup');
+    var span = document.getElementsByClassName("close")[0];
+    var button = document.getElementById("players");
+    var cell = document.getElementById("trella-quotes");
 
+    span.onclick = function() {
+      popup.style.display = "none";
+    }
+
+    button.onclick = function() {
+      popup.style.display = "none";
+    }
+
+    // cell.onclick = function() {
+    //   this.toggleLyrics("trella-quotes");
+    // }
   }
+
+  // toggleLyrics(id) {
+  //   var element = document.getElementById(id);
+  //
+  //   if (element) {
+  //       var display = element.style.display;
+  //
+  //       if (display == "none") {
+  //           element.style.display = "block";
+  //       } else {
+  //           element.style.display = "none";
+  //       }
+  //   }
+  // }
 
 
 }
@@ -157,7 +157,18 @@ module.exports = Game;
 
 
 /***/ }),
-/* 3 */
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Game = __webpack_require__(0);
+
+document.addEventListener('DOMContentLoaded', () => {
+  new Game().setup();
+})
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports) {
 
 class Board {
@@ -167,6 +178,8 @@ class Board {
       [null,null,null],
       [null,null,null]
     ];
+    this.cellMapping = this.cellMapping();
+    this.tttMapping = this.tttMapping();
   }
 
   // place mark
@@ -254,13 +267,22 @@ class Board {
       6: [2, 0], 7: [2, 1], 8: [2, 2]
     };
   }
+
+  tttMapping() {
+    const cells = document.querySelectorAll(".cell");
+    const tttMap = {}
+    cells.forEach((el, idx) => {
+      tttMap[idx] = cells[idx]
+    })
+    return tttMap;
+  }
 }
 
 module.exports = Board;
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports) {
 
 class Trella {
@@ -268,24 +290,26 @@ class Trella {
     this.board = board;
     this.name = 'Trella';
     this.mark = 'x';
-    this.cellMapping = board.cellMapping();
   }
 
   makeStartMark() {
-    const cells = document.querySelectorAll('.cell');
     let randPos = Math.floor(Math.random() * 9);
-    this.board.placeMark(this.cellMapping[randPos], this.mark, cells[randPos]);
+    this.board.placeMark(this.board.cellMapping[randPos], this.mark, this.board.tttMapping[randPos]);
   }
 
   makeMark() {
-    // line 16-18 FIX rand number 
-    const cells = document.querySelectorAll('.cell');
     const randNum = Math.floor(Math.random() * this.winningMoves().length);
-    debugger
-    const possiblePos = this.cellMapping[randNum];
-    this.board.placeMark(possiblePos, this.mark, cells[randNum])
+    const possiblePos = this.winningMoves()[randNum];
+
+    for (var key in this.board.tttMapping) {
+      if (this.board.cellMapping[key][0] === possiblePos[0] && this.board.cellMapping[key][1] === possiblePos[1]) {
+        this.board.placeMark(possiblePos, this.mark, this.board.tttMapping[key])
+      }
+    }
   }
 
+
+//what to do incase there are no more winning moves left!!!!!!!!!!!!!
   winningMoves() {
     const winningCom = this.board.winningComb();
     let possibleCom = [];
