@@ -9,10 +9,6 @@ class Board {
     this.tttMapping = this.tttMapping();
   }
 
-  // place mark
-  // has an x or o already?
-  // game over (full board)
-
   placeMark(pos, mark, element) {
     if (this.isEmpty(pos) === true) {
       this.grid[pos[0]][pos[1]] = mark;
@@ -103,6 +99,15 @@ class Board {
     })
     return tttMap;
   }
+
+  gameOver() {
+    this.grid.forEach( row =>)
+  }
+
+  reset() {
+
+  }
+
 }
 
 module.exports = Board;

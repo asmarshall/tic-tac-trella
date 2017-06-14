@@ -21,8 +21,6 @@ class Trella {
     }
   }
 
-
-//what to do incase there are no more winning moves left!!!!!!!!!!!!!
   winningMoves() {
     const winningCom = this.board.winningComb();
     let possibleCom = [];
@@ -38,11 +36,21 @@ class Trella {
     }
 
     const emptyCoords = [];
-    possibleCom.forEach( coord => {
-      if (this.board.grid[coord[0]][coord[1]] !== "x") {
-        emptyCoords.push(coord);
-      }
-    })
+    if (possibleCom.length === 0) {
+      this.board.grid.forEach( (row,rowIdx) => {
+        row.forEach( (mark,colIdx) => {
+          if (mark === null) {
+            emptyCoords.push([rowIdx,colIdx]);
+          }
+        })
+      })
+    } else {
+      possibleCom.forEach( coord => {
+        if (this.board.grid[coord[0]][coord[1]] !== "x") {
+          emptyCoords.push(coord);
+        }
+      })
+    }
 
     return this.multiDimensionalUnique(emptyCoords);
   }
