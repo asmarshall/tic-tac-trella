@@ -100,12 +100,23 @@ class Board {
     return tttMap;
   }
 
+// RETURN GAME OVER IF GETS TO THIS POINT(AKA A TIE)
   gameOver() {
-    this.grid.forEach( row =>)
+    this.grid.forEach( row => {
+      row.forEach( mark => {
+        if (mark !== null) {
+          return true;
+        }
+      })
+    })
   }
 
   reset() {
-
+    this.grid = [
+      [null,null,null],
+      [null,null,null],
+      [null,null,null]
+    ];
   }
 
 }

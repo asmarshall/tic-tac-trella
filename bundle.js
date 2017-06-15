@@ -81,10 +81,6 @@ class Game {
     this.currentPlayer = "";
   }
 
-  // reset
-  // start
-  // switch player
-
   setup() {
     this.listenForMarkPlacement();
     this.listenForPlayerStart();
@@ -98,8 +94,8 @@ class Game {
       cell.addEventListener('click', (ev) => {
         this.board.placeMark(cellMapping[idx], "o", cell)
         console.log("button is clicked");
-
         this.playerTrella.makeMark();
+        this.didWin();
       })
     })
   }
@@ -130,26 +126,26 @@ class Game {
     button.onclick = function() {
       popup.style.display = "none";
     }
-
-    // cell.onclick = function() {
-    //   this.toggleLyrics("trella-quotes");
-    // }
   }
 
-  // toggleLyrics(id) {
-  //   var element = document.getElementById(id);
-  //
-  //   if (element) {
-  //       var display = element.style.display;
-  //
-  //       if (display == "none") {
-  //           element.style.display = "block";
-  //       } else {
-  //           element.style.display = "none";
-  //       }
-  //   }
-  // }
+// place this after a mark is made in order to check to see if it's a winning mark
+// method for checking the winning coms to see if this completes one
 
+  didWin() {
+    var o = 'o';
+    var x = 'x';
+    this.board.winningComb().forEach( combo => {
+      if (this.board.grid[combo[0][0]][combo[0][1]] === x && this.board.grid[combo[1][0]][combo[1][1]] === x && this.board.grid[combo[2][0]][combo[2][1]] === x) {
+        window.alert("trella wins");
+      } else if (this.board.grid[combo[0][0]][combo[0][1]] === o && this.board.grid[combo[1][0]][combo[1][1]] === o && this.board.grid[combo[2][0]][combo[2][1]] === o) {
+        window.alert("you win");
+      }
+    })
+  }
+
+  gameOver() {
+    window.alert("Game Over!!");
+  }
 
 }
 
@@ -171,7 +167,131 @@ document.addEventListener('DOMContentLoaded', () => {
 /* 2 */
 /***/ (function(module, exports) {
 
-throw new Error("Module parse failed: /Users/angelamarshall/DBC/Projects/tic-tac-trella/board.js Unexpected token (104:29)\nYou may need an appropriate loader to handle this file type.\n| \n|   gameOver() {\n|     this.grid.forEach( row =>)\n|   }\n| ");
+class Board {
+  constructor() {
+    this.grid = [
+      [null,null,null],
+      [null,null,null],
+      [null,null,null]
+    ];
+    this.cellMapping = this.cellMapping();
+    this.tttMapping = this.tttMapping();
+  }
+
+  placeMark(pos, mark, element) {
+    if (this.isEmpty(pos) === true) {
+      this.grid[pos[0]][pos[1]] = mark;
+      element.append(mark);
+    }
+  }
+
+  isEmpty(pos) {
+    if (this.grid[pos[0]][pos[1]] === null) {
+      return true;
+    }
+    return false;
+  }
+
+  emptyCells() {
+    const emptyCellArr = [];
+
+    this.grid.forEach((row, rowIdx) => {
+      row.forEach((cell, colIdx) => {
+        if (!cell) {
+          emptyCellArr.push([rowIdx, colIdx]);
+        }
+      });
+    });
+
+    return emptyCellArr;
+  }
+
+  boardFull() {
+    this.grid.forEach(row => {
+      row.forEach(cell => {
+        if (cell === null) {
+          return false;
+        }
+      })
+    })
+    return true;
+  }
+
+  boardWon(mark) {
+    let winningCom = winningComb();
+    for (let i=0; i<winningCom.length; i++) {
+      let marked = true;
+      let winRow = winningCom[i];
+      for (let j=0; j<winningCom.length; j++) {
+        let x = winRow[1];
+        let y = winRow[0];
+        if (this.grid[y][x] !== mark) {
+          marked = false;
+        }
+      }
+      if (marked) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  winningComb() {
+    return [
+      // horizontals
+      [ [0, 0], [0, 1], [0, 2] ],
+      [ [1, 0], [1, 1], [1, 2] ],
+      [ [2, 0], [2, 1], [2, 2] ],
+      // verticals
+      [ [0, 0], [1, 0], [2, 0] ],
+      [ [0 ,1], [1, 1], [2, 1] ],
+      [ [0, 2], [1, 2], [2, 2] ],
+      // diagnoals
+      [ [0, 0], [1, 1], [2, 2] ],
+      [ [0, 2], [1, 1], [2, 0] ]
+    ]
+  }
+
+  cellMapping() {
+    return {
+      0: [0, 0], 1: [0, 1], 2: [0, 2],
+      3: [1, 0], 4: [1, 1], 5: [1, 2],
+      6: [2, 0], 7: [2, 1], 8: [2, 2]
+    };
+  }
+
+  tttMapping() {
+    const cells = document.querySelectorAll(".cell");
+    const tttMap = {}
+    cells.forEach((el, idx) => {
+      tttMap[idx] = cells[idx]
+    })
+    return tttMap;
+  }
+
+// RETURN GAME OVER IF GETS TO THIS POINT(AKA A TIE)
+  gameOver() {
+    this.grid.forEach( row => {
+      row.forEach( mark => {
+        if (mark !== null) {
+          return true;
+        }
+      })
+    })
+  }
+
+  reset() {
+    this.grid = [
+      [null,null,null],
+      [null,null,null],
+      [null,null,null]
+    ];
+  }
+
+}
+
+module.exports = Board;
+
 
 /***/ }),
 /* 3 */
