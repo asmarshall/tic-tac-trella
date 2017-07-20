@@ -7,4 +7,4 @@ Creating memes of Trella is an ongoing joke between many friends, and this game 
 :)  
 
 
-![2014-10-22 11_35_09](https://gfycat.com/gifs/detail/ThankfulShortChipmunk)
+![](tictactrella.gif)
