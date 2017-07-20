@@ -96,6 +96,7 @@ class Game {
         console.log("button is clicked");
         this.playerTrella.makeMark();
         this.didWin();
+        this.gameOverTie();
       })
     })
   }
@@ -143,8 +144,15 @@ class Game {
     })
   }
 
-  gameOver() {
-    window.alert("Game Over!!");
+  gameOverTie() {
+    // this.board.grid.forEach( row => {
+    //   row.forEach( mark => {
+    //     if (mark === null) {
+    //       // return true;
+    //       window.alert("it's a tie");
+    //     }
+    //   })
+    // })
   }
 
 }
@@ -267,17 +275,6 @@ class Board {
       tttMap[idx] = cells[idx]
     })
     return tttMap;
-  }
-
-// RETURN GAME OVER IF GETS TO THIS POINT(AKA A TIE)
-  gameOver() {
-    this.grid.forEach( row => {
-      row.forEach( mark => {
-        if (mark !== null) {
-          return true;
-        }
-      })
-    })
   }
 
   reset() {
